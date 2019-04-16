@@ -1,5 +1,6 @@
 package;
 
+import flixel.util.FlxSpriteUtil;
 import flixel.effects.particles.FlxEmitter;
 import flixel.util.FlxTimer;
 import flixel.math.FlxPoint;
@@ -24,6 +25,7 @@ class Enemy extends FlxSprite
     var _speed : Float;
     var _multiplierFactor : Float;
     var _idleSpeedSet : Bool;
+    var _idleFlickering : Bool;
     var _trail : FlxTrail;
     var _spinSpeed : Float;
 
@@ -73,6 +75,7 @@ class Enemy extends FlxSprite
         if(_currentState == EnemyState.IDLE){
             _currentState = EnemyState.WAITING;
             _idleSpeedSet = false;
+            _idleFlickering = false;
         } else if (_currentState == EnemyState.WAITING){
             _currentState = EnemyState.CHASE;
         } else {
@@ -86,8 +89,15 @@ class Enemy extends FlxSprite
         if(!_idleSpeedSet) {
             var vel : FlxPoint = getVelocityToPlayer();
             velocity.set(vel.x, vel.y);
+
+            
             
             _idleSpeedSet = true;
+        }
+
+        if (!_idleFlickering) {
+            FlxSpriteUtil.flicker(this, 0, 0.5);
+            _idleFlickering = true;
         }
     }
 
@@ -95,6 +105,8 @@ class Enemy extends FlxSprite
     {
         angle += FlxG.elapsed * _spinSpeed * _multiplierFactor;
         velocity.set(0, 0);
+
+        FlxSpriteUtil.stopFlickering(this);
     }
 
     function chasingState() : Void

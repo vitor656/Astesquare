@@ -44,7 +44,6 @@ class PlayState extends FlxState
 
 		if(!player.alive) {
 			//restartText.visible = true;
-			FlxSpriteUtil.flicker(restartText, 0);
 
 			if(FlxG.mouse.justPressed) {
 				FlxG.resetState();
@@ -70,6 +69,7 @@ class PlayState extends FlxState
 
 		restartText = new FlxBitmapText();
 		restartText.text = "Click to play again";
+		restartText.scale.set(2, 2);
 		restartText.screenCenter();
 		restartText.visible = false;
 
@@ -82,9 +82,15 @@ class PlayState extends FlxState
 		}, 0);
 	}
 
+	public function setupGameOver() : Void
+	{
+		FlxSpriteUtil.flicker(restartText, 0, 0.2);
+	}
+
 	function createEnemy(x : Int, y : Int) : Void
 	{
-		enemies.add(new Enemy(x, y));
+		if(player.alive)
+			enemies.add(new Enemy(x, y));
 	}
 
 	function collisions() : Void

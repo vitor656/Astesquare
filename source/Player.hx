@@ -12,6 +12,8 @@ import flixel.FlxSprite;
 class Player extends FlxSprite
 {
 
+    var _spinMultiplier : Float = 200;
+    var _lerpFactor : Float = 0.05;
     var _trail : FlxTrail;
     var _nextPosition : FlxPoint;
 
@@ -24,7 +26,7 @@ class Player extends FlxSprite
         makeGraphic(8, 8, FlxColor.WHITE);
 		screenCenter();
         _trail = new FlxTrail(this, null, 30, 3, 0.4, 0.05);
-        _nextPosition = new FlxPoint();
+        _nextPosition = new FlxPoint(FlxG.width / 2, FlxG.height / 2);
 
         Reg.PS.add(this);
         Reg.PS.add(_trail);
@@ -47,10 +49,18 @@ class Player extends FlxSprite
 
     function movement() : Void
     {
-        angle += FlxG.elapsed * 200;
 
-		x = FlxMath.lerp(x, _nextPosition.x, 0.2);
-		y = FlxMath.lerp(y, _nextPosition.y, 0.2);
+        if(FlxMath.distanceToPoint(this, _nextPosition) > 10) {
+            angle += FlxG.elapsed * _spinMultiplier * 2;
+        } else {
+            angle += FlxG.elapsed * _spinMultiplier;
+        }
+
+        //angle += FlxG.elapsed * _spinMultiplier;
+
+		x = FlxMath.lerp(x, _nextPosition.x, _lerpFactor);
+		y = FlxMath.lerp(y, _nextPosition.y, _lerpFactor);
+
     }
 
     function collideWithEnemy() : Void
@@ -62,6 +72,9 @@ class Player extends FlxSprite
     {
         explode();
         _trail.kill();
+        
+        Reg.PS.setupGameOver();
+
         kill();
     }
     

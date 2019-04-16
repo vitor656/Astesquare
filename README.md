@@ -1,0 +1,2 @@
+# Astesquare
+Another simple game

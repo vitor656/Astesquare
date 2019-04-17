@@ -34,16 +34,15 @@ class Enemy extends FlxSprite
     var _currentState : EnemyState;
     var _statesTimer : FlxTimer;
 
-    public function new(x : Int, y : Int)
+    public function new(x : Int, y : Int, width : Int = 8, height : Int = 8)
     {
         super(x, y);
 
         _speed = 20;
         _spinSpeed = 200;
         _multiplierFactor = 4;
-        
 
-		makeGraphic(8, 8, FlxColor.RED);
+		makeGraphic(width, height, FlxColor.RED);
 		velocity.set(getVelocityToPlayer().x, getVelocityToPlayer().y);
         _idleSpeedSet = true;
 
@@ -90,8 +89,6 @@ class Enemy extends FlxSprite
             var vel : FlxPoint = getVelocityToPlayer();
             velocity.set(vel.x, vel.y);
 
-            
-            
             _idleSpeedSet = true;
         }
 
@@ -147,7 +144,16 @@ class Enemy extends FlxSprite
     function die() : Void
     {
         createExplosion();
+        spawnSmallerEnemies();
         _trail.kill();
         kill();
+    }
+
+    function spawnSmallerEnemies() : Void
+    {
+        var enemy_1 : Enemy = new Enemy(Std.int(x), Std.int(y), Std.int(width / 2), Std.int(height / 2));
+        var enemy_2 : Enemy = new Enemy(Std.int(x), Std.int(y), Std.int(width / 2), Std.int(height / 2));
+        Reg.PS.add(enemy_1);
+        Reg.PS.add(enemy_2);
     }
 }

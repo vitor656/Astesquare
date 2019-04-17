@@ -29,7 +29,7 @@ class PlayState extends FlxState
 	override public function create():Void
 	{
 		super.create();
-
+		
 		Reg.PS = this;
 		random = new FlxRandom();
 
@@ -77,8 +77,22 @@ class PlayState extends FlxState
 		add(scoreText);
 		add(restartText);
 
-		new FlxTimer().start(1, function(timer) { 
-			createEnemy( random.int(0, FlxG.width), random.int(0, FlxG.height) ); 
+		new FlxTimer().start(3, function(timer) { 
+
+			var sideToSpawn : Int = random.int(0, 3);
+
+			switch (sideToSpawn) {
+				case 0: 
+					createEnemy( random.int(0, FlxG.width), -10 ); 
+				case 1: 
+					createEnemy( random.int(0, FlxG.width), FlxG.height + 10 ); 
+				case 2: 
+					createEnemy( -10, random.int(0, FlxG.height) ); 
+				case 3: 
+					createEnemy( FlxG.width + 10, random.int(0, FlxG.height) ); 
+			}
+
+			
 		}, 0);
 	}
 
@@ -90,7 +104,7 @@ class PlayState extends FlxState
 	function createEnemy(x : Int, y : Int) : Void
 	{
 		if(player.alive)
-			enemies.add(new Enemy(x, y));
+			enemies.add(new Enemy(x, y, 32, 32));
 	}
 
 	function collisions() : Void
